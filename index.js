@@ -3,13 +3,21 @@ const speedTest = require("speedtest-net");
 const runTest = async () => {
   try {
     const results = await speedTest();
-    const uploadBpms = (results.upload.bytes / 100000 ) / (results.upload.elapsed / 1000)
-    console.log(`${uploadBpms} Mb/S`)
+    return (results.upload.bytes / 100000 ) / (results.upload.elapsed / 1000)
   } catch (err) {
-    console.log(err.message);
-  } finally {
-    process.exit(0);
+    return err.message;
   }
 };
 
-runTest();
+runTest().then(result => {
+    if (typeof result === "string") {
+        console.log(result)
+        return;
+    }
+
+    if (result > 10) {
+        console.log('good to go')
+    } else {
+        console.log('your internet sucks')
+    }
+})
